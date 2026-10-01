@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Dashboard</title>
+<style>
+body{font-family:Arial; background:#FDF6EE; margin:0; padding:0}
+.navbar{background:#5C4033; color:#FDF6EE; padding:15px 30px; display:flex; justify-content:space-between; align-items:center}
+.navbar h2{margin:0}
+.logout{background:#A47551; color:white; padding:8px 18px; border-radius:20px; text-decoration:none; font-weight:bold; border:1px solid #DDBEA9}
+.logout:hover{background:#9C6644}
+.card{background:#FFFFFF; border:2px solid #DDBEA9; padding:35px; border-radius:15px; text-align:center; max-width:450px; margin:40px auto; box-shadow:0 6px 15px rgba(92,64,51,0.15)}
+.time-big{font-size:32px; font-weight:bold; color:#5C4033; background:#FFF8F0; padding:10px; border-radius:8px; border:1px solid #E6CCB2; display:inline-block; margin:10px 0}
+.btn-brown{background:#5C4033; color:#FDF6EE; padding:14px 40px; border-radius:30px; text-decoration:none; font-weight:bold; display:inline-block; margin-top:20px; font-size:17px; letter-spacing:0.5px}
+.btn-brown:hover{background:#7F5539; transform:scale(1.03)}
+.history{background:#FFFFFF; padding:25px; border-radius:15px; max-width:900px; margin:20px auto; border:2px solid #DDBEA9}
+th{background:#5C4033; color:#FDF6EE; padding:14px; text-align:left}
+td{padding:13px; border-bottom:1px solid #EDE0D4; color:#5C4033}
+.badge-pending{background:#E6CCB2; color:#5C4033; padding:5px 12px; border-radius:20px; font-weight:bold; font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <h2>☕ Student Dashboard</h2>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <span style="margin-right:15px;">Hi, {{ name }}</span>
+    <a href="/my_profile" style="background:#7F5539;color:white;padding:8px 16px;border-radius:8px;text-decoration:none">My Profile</a>
+    <a href="/logout" class="logout">Logout</a>
+  </div>
+</div>
+
+<div class="card">
+  {% if currently_clocked_in %}
+    <p style="color:#7F5539; font-weight:bold; margin:0; font-size:18px;">● You are clocked in</p>
+    <p style="color:#7F5539; margin-bottom:5px;">Clocked in at:</p>
+    <div class="time-big">{{ currently_clocked_in.clock_in_time.strftime('%H:%M:%S') }}</div>
+    <p style="color:#7F5539;">{{ currently_clocked_in.clock_in_time.strftime('%Y-%m-%d') }}</p>
+    <a href="/clock_out" class="btn-brown">Clock Out</a>
+  {% else %}
+    <p style="color:#7F5539; font-size:18px; font-weight:bold;">You are clocked out</p>
+    <p style="color:#7F5539;">Click below to start</p>
+    <form action="/clock_in" method="POST">
+<input type="text" name="task_description" required placeholder="What are you doing?">
+<input type="text" name="location" required placeholder="Location?">
+<button type="submit">Clock In</button>
+</form>
+
+  {% endif %}
+</div>
+
+<div class="history">
+  <h3 style="color:#7F5539; margin:0 0 15px 0;">📋 Your History</h3>
+  <table style="width:100%; border-collapse:collapse;">
+    <tr><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th><th>Comment</th></tr>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.clock_in_time.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{% if log.clock_out_time %}{{ log.clock_out_time.strftime('%Y-%m-%d %H:%M') }}{% else %}<b style="color:#B07D4F;">Still In</b>{% endif %}</td>
+      <td><b>{{ log.total_hours if log.total_hours else '-' }}</b></td>
+      <td>
+        <span class="badge-pending">{{ log.status }}</span>
+      </td>
+      <td>
+        {% if log.status == 'rejected' and log.rejection_comment %}
+          <span style="color:#7F5539; font-size:16px;">{{ log.rejection_comment }}</span>
+        {% else %}
+          -
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p style="text-align:right; font-weight:bold; color:#5C4033; margin-top:15px; background:#FDF6EE; padding:10px; border-radius:8px;">Total Approved: {{ total_approved }} hours</p>
+</div>
+</body>
+</html>

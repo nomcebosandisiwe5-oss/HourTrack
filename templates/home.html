@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hour Track</title>
+<style>
+nav{position:fixed; top:0; width:100%; background:rgba(0,0,0,0.7); padding:12px 25px; display:flex; justify-content:space-between; box-sizing:border-box;}
+nav a{color:white; text-decoration:none; margin-left:15px;}
+
+html{scroll-behavior:smooth;}
+body{margin:0; font-family:Arial;}
+.bg{
+  height:100vh;
+  background: url("/static/hourtrack.jpg");
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+h1{color:white; font-size:40px;}
+.btn{
+  margin-top:25px;
+  background:#7F5539;
+  color:white;
+  padding:14px 70px; 
+  border-radius:10px;
+  text-decoration:none;
+  font-size:20px;
+  font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+  <nav>
+  <strong>   </strong>
+  <div>
+  
+    <a href="#about">About</a>
+    <a href="#guide">Guide</a>
+    <a href="/login">Log in</a>
+  
+  </div>
+</nav>
+<div class="bg">
+  <h1>Hour Track<br>A Digital Practical Hours Logging System</h1>
+  <a href="/login" class="btn">Log in</a>
+</div>
+
+
+<!-- ABOUT -->
+<div id="about" style="padding:60px 20px; background:white; color:#222;">
+  <h2>About</h2>
+  <p>Hour Track is a digital system to replace paper logbooks for UNIZULU teaching(B-ED),nursing practice. Students Clock In/Out with task and location, supervisors approve.</p>
+</div>
+
+<!-- GUIDE -->
+<div id="guide" style="padding:60px 20px; background:#0f172a; color:white;">
+  <h2> Guide</h2>
+  <p>1. Clock In with Task & Location</p>
+  <p>2. Clock Out</p>
+  <p>3. Supervisor Approves</p>
+  <p>4. Hours counted</p>
+</div>
+</body>
+</html>

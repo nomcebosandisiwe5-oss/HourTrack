@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login Screen</title>
+<style>
+  body { 
+    background: #d7c4b0; 
+    display: flex; justify-content: center; align-items: center; 
+    height: 100vh; margin: 0; font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  .container {
+    background: #c9b090; 
+    padding: 20px; 
+    border-radius: 24px;
+    width: 90%; max-width: 380px;
+    border: 2px solid #8d6e53;
+  }
+  .card {
+    background: #f8fbff;
+    border-radius: 20px;
+    padding: 25px 25px 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  h2 { text-align: center; color: #6f543f; font-weight: 500; margin: 0 0 15px; }
+  .icon-wrap { display: flex; justify-content: center; margin-bottom: 25px; }
+  .icon svg { width: 50px; height: 50px; stroke: #8d6e53; }
+  label { color: #5c4033; font-weight: 600; font-size: 18px; display: block; margin-bottom: 8px; }
+  .input-box { position: relative; margin-bottom: 18px; }
+  input {
+    width: 100%; box-sizing: border-box;
+    padding: 12px 15px;
+    border-radius: 10px; border: 1px solid #e1e8f0;
+    background: #f1f5f9; outline: none; font-size: 15px;
+  }
+  input:focus { border-color: #3b82f6; background: white; }
+  .eye {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    cursor: pointer; color: #8aa0c8; font-size: 18px;
+  }
+  button {
+    width: 100%; padding: 13px;
+    background:  #8d6e53; color: white; border: none;
+    border-radius: 10px; font-size: 18px; font-weight: 600;
+    cursor: pointer; margin-top: 10px;
+  }
+  button:hover { background: #6f543f; }
+  .msg { text-align: center; color: #3b82f6; font-size: 13px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h2>Login Screen</h2>
+    <div class="icon-wrap">
+      <div class="icon">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+      </div>
+    </div>
+
+    {% if message %}<div class="msg">{{ message }}</div>{% endif %}
+
+    <form method="POST" action="/login">
+      <label>Enter Email</label>
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Enter email" required>
+      </div>
+
+      <label>Enter Password</label>
+      <div class="input-box">
+        <input type="password" id="pwd" name="password" placeholder="••••••••" required>
+        <span class="eye" onclick="toggle()">👁</span>
+      </div>
+
+      <!-- ⬇️ FORGOT PASSWORD LINK ⬇️ -->
+      <div style="text-align: right; margin-top: -8px; margin-bottom: 18px;">
+        <a href="/forgot-password" style="color: #7F5539; font-size: 13px; text-decoration: none; font-weight: 500;">Forgot Password?</a>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p style="margin-top:15px; text-align:center; font-size:14px;">
+      Don't have an account? <a href="/register" style="color:#7F5539; font-weight:bold; text-decoration:none;">Register here</a>
+    </p>
+
+  </div>
+</div>
+
+<script>
+function toggle(){
+  const p = document.getElementById('pwd');
+  p.type = p.type === 'password' ? 'text' : 'password';
+}
+</script>
+</body>
+</html>

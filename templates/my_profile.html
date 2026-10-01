@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Profile - UNIZULU HourTrack</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:'Segoe UI';background:#FDF6EE;margin:0;color:#5C4033}
+.header{background:#7F5539;color:white;padding:18px 30px;display:flex;justify-content:space-between;align-items:center}
+.card{max-width:650px;margin:30px auto;background:white;padding:30px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+.row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f5e6d3}
+.row strong{color:#7F5539}
+.badge{background:#FDF6EE; border:1px solid #7F5539; color:#7F5539; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:bold; text-transform:uppercase}
+.btn{display:inline-block;margin-top:20px;background:#7F5539;color:white;padding:10px 20px;border-radius:8px;text-decoration:none; font-weight:bold}
+ul{padding-left:18px}
+li{margin:6px 0}
+</style>
+</head>
+<body>
+<div class="header">
+  <h2 style="margin:0;color:white">My Profile</h2>
+  <a href="/dashboard" style="color:white;text-decoration:none">← Dashboard</a>
+</div>
+
+<div class="card">
+<h2 style="margin-top:0">{{ user.first_name }} {{ user.last_name }}</h2>
+<p style="margin-top:-10px;color:#8c6b5a">{{ user.email }}</p>
+
+<div class="row"><strong>First Name:</strong><span>{{ user.first_name }}</span></div>
+<div class="row"><strong>Last Name:</strong><span>{{ user.last_name }}</span></div>
+<div class="row"><strong>Email / Student Email:</strong><span>{{ user.email }}</span></div>
+<div class="row"><strong>Student No / ID:</strong><span>{{ user.email_prefix }}</span></div>
+<div class="row"><strong>Location:</strong><span>{{ user.location or 'Not set' }}</span></div>
+<div class="row"><strong>Course:</strong><span>{{ user.course or 'Not set' }}</span></div>
+<div class="row"><strong>Role:</strong><span class="badge">{{ user.role }}</span></div>
+
+{# COURSE - ONLY SHOWS IF STUDENT SELECTED IT #}
+{% if user.role|lower == 'student' and user.course %}
+
+<div class="row"><strong>My Supervisor:</strong><span>{{ user.supervisor.first_name ~ ' ' ~ user.supervisor.last_name if user.supervisor else 'Not assigned yet' }}</span></div>
+{% endif %}
+
+{# SUPERVISOR - SHOWS STUDENTS #}
+{% if user.role|lower == 'supervisor' %}
+<div class="row"><strong>My Students:</strong><span>{{ user.students|length if user.students is defined and user.students else 0 }} assigned</span></div>
+{% if user.students is defined and user.students and user.students|length > 0 %}
+<div style="margin-top:15px; background:#FDF6EE; padding:15px; border-radius:10px">
+<strong>Students List:</strong>
+<ul>
+{% for s in user.students %}
+<li>{{ s.first_name }} {{ s.last_name }} - {{ s.course }} ({{ s.location }})</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{% endif %}
+
+<div class="row"><strong>Status:</strong>
+  {% if user.is_approved %}
+    <span style="color:#7F5539; font-weight:bold">Approved</span>
+  {% else %}
+    <span style="color:#B08968; font-weight:bold">Pending Approval</span>
+  {% endif %}
+</div>
+
+<a href="/dashboard" class="btn">Back to Dashboard</a>
+<a href="/logout" style="margin-left:10px; color:#7F5539">Logout</a>
+</div>
+</body>
+</html>

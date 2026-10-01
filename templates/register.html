@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body{ background:#8B5E3C; display:flex; justify-content:center; align-items:center; min-height:100vh; font-family:Arial; }
+  .card{ background:white; padding:40px; border-radius:20px; width:340px; box-shadow:0 8px 24px rgba(0,0,0,0.15); text-align:center; }
+  h2{ margin:0 0 10px 0; color:#4e342e; }
+  .icon{ font-size:45px; margin-bottom:15px; }
+  label{ display:block; text-align:left; font-weight:bold; font-size:13px; margin-top:12px; color:#4e342e; }
+  input, select{ width:100%; padding:9px; margin-top:4px; border-radius:10px; border:1px solid #d7ccc8; background:#efebe9; box-sizing:border-box; }
+  input:focus, select:focus{ border-color:#8d6e63; outline:none; }
+  button{ width:100%; padding:12px; border-radius:20px; border:none; background:#6d4c41; color:white; margin-top:18px; cursor:pointer; font-weight:bold; }
+  button:hover{ background:#4e342e; }
+  a{ color:#6d4c41; }
+  .error{ color:red; font-size:12px; text-align:left; margin-top:5px; display:none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>Register Screen</h2>
+  <div class="icon">👤</div>
+
+  <form method="POST" id="registerForm">
+    <label>First Name:</label>
+    <input type="text" name="first_name" required>
+
+    <label>Last Name:</label>
+    <input type="text" name="last_name" required>
+
+    <label>Email/Student Email:</label>
+    <input type="email" name="email" id="email" required placeholder="123@stu.unizulu.ac.za">
+    <div id="email-error" class="error">Students must use @unizulu.ac.za email only!</div>
+
+    <label>Password:</label>
+    <input type="password" name="password" required>
+
+    <label>Confirm Password:</label>
+    <input type="password" name="confirm_password" required>
+
+    <label>Location:</label>
+    <select name="location" id="location">
+      <option value="">Select Location</option>
+      <option value="ngwelezane hospital">Ngwelezane Hospital</option>
+      <option value="hlabisa hospital">Hlabisa Hospital</option>
+      <option value="queen nandi regional hospital">Queen Nandi Regional Hospital</option>
+      <option value="eshowe hospital">Eshowe Hospital</option>
+      <option value="nkandla district hospital">Nkandla District Hospital</option>
+      <option value="Ntikili primary school">Ntikili Primary School</option>
+      <option value="Nkonyane primary school">Nkonyane Primary School</option>
+      <option value="mlokothwa high school">Mlokothwa High School</option>
+      <option value="mgwazeni high school">Mgwazeni High School</option>
+    </select>
+
+    <label>Role:</label>
+    <select name="role" id="role">
+      <option value="">Select Role</option>
+      <option value="student">Student</option>
+      <option value="supervisor">Supervisor</option>
+    </select>
+
+  <div id="course-field">
+    <label>Course:</label>
+    <select name="course" id="course">
+      <option value="">Select  2026 Course</option>
+      <option value="nursing science leve 1">Nursing Science Level 1 </option>
+      <option value="nursing science leve 2">Nursing Science Level 2</option>
+      <option value="nursing science leve 3">Nursing Science Level 3</option>
+      <option value="nursing science leve 4">Nursing Science Level 4</option> 
+      <option value="b-ed level 1 ">B-ED Level 1</option>
+      <option value="b-ed level 2 ">B-ED Level 2</option>
+      <option value="b-ed level 3 ">B-ED Level 3</option>
+      <option value="b-ed level 4 ">B-ED Level  4</option>
+    </select>
+    </div>
+
+ <button type="submit">Register</button>
+</form>
+</div>
+
+<script>
+  const roleSelect = document.getElementById('role');
+  const courseField = document.getElementById('course-field');
+  const emailInput = document.getElementById('email');
+  const emailError = document.getElementById('email-error');
+  const form = document.getElementById('registerForm');
+
+  roleSelect.addEventListener('change', function() {
+    if (this.value.toLowerCase() === 'supervisor') {
+      courseField.style.display = 'none';
+    } else {
+      courseField.style.display = 'block';
+    }
+    validateEmail();
+  });
+
+  function validateEmail() {
+    const email = emailInput.value.toLowerCase();
+    const role = roleSelect.value.toLowerCase();
+    
+    if (role === 'student' && email.length > 0) {
+      // CHANGE THIS DOMAIN IF YOUR SCHOOL IS DIFFERENT
+      if (!email.endsWith('@stu.unizulu.ac.za')) {
+        emailError.style.display = 'block';
+        return false;
+      }
+    }
+    emailError.style.display = 'none';
+    return true;
+  }
+
+  emailInput.addEventListener('input', validateEmail);
+
+  form.addEventListener('submit', function(e) {
+    if (!validateEmail()) {
+      e.preventDefault();
+      alert('Students must register with @stu.unizulu.ac.za email only!');
+    }
+  });
+</script>
+</body>
+</html>

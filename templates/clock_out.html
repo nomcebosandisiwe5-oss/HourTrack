@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+body{font-family:Arial; background:#FDF6EE; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0}
+.card{background:white; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:380px; text-align:center; border:1px solid #f3e5d0}
+h1{color:#5C4033; margin-top:0}
+.info{background:#FFFBF7; padding:15px; border-radius:8px; border:1px solid #e9dcc5; text-align:left; margin:20px 0}
+.info p{margin:8px 0; color:#5C4033; font-size:15px}
+.info span{font-weight:bold; color:#7F5539}
+.time{font-size:24px; font-weight:bold; color:#5C4033}
+button{background:#5C4033; color:white; padding:12px; width:100%; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px}
+button:hover{background:#7F5539}
+a.back{color:#7F5539; text-decoration:none; font-size:14px; display:inline-block; margin-top:15px; font-weight:600}
+</style>
+
+<div class="card">
+  <h1>⏰ Clock Out</h1>
+  <p style="color:#9C6644; font-size:14px;">You are about to end your session</p>
+  
+  <div class="info">
+    <p>Clocked In: <span>{{ clock_in_time.strftime('%H:%M:%S') if clock_in_time else '--:--' }}</span></p>
+    <p>Today: <span>{{ clock_in_time.strftime('%Y-%m-%d') if clock_in_time else '' }}</span></p>
+    <p>Current Time: <span id="liveTime" class="time">--:--:--</span></p>
+    {% if elapsed %}
+    <p>Duration so far: <span>{{ elapsed }}</span></p>
+    {% endif %}
+  </div>
+
+  <form method="POST" action="{{ url_for('clock_out') }}">
+    <button type="submit">Confirm Clock Out</button>
+  </form>
+
+  <a href="/student_dashboard" class="back">← Cancel and go back</a>
+</div>
+
+<script>
+function updateTime(){
+  const now = new Date();
+  document.getElementById('liveTime').innerHTML = now.toLocaleTimeString();
+}
+setInterval(updateTime, 1000);
+updateTime();
+</script>
+
+</body>
+</html>

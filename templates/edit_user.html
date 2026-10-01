@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit User</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="card" style="max-width:500px; margin:30px auto;">
+<h2>Edit User: {{ user.first_name }} {{ user.last_name }}</h2>
+<form method="POST">
+  <label>First Name</label>
+  <input type="text" name="first_name" value="{{ user.first_name }}" required style="width:100%; padding:8px; margin-bottom:10px;">
+
+  <label>Last Name</label>
+  <input type="text" name="last_name" value="{{ user.last_name }}" required style="width:100%; padding:8px; margin-bottom:10px;">
+
+  <label>Email</label>
+  <input type="email" name="email" value="{{ user.email }}" required style="width:100%; padding:8px; margin-bottom:10px;">
+
+  <label>Role</label>
+  <select name="role" style="width:100%; padding:8px; margin-bottom:10px;">
+    <option value="student" {% if user.role=='student' %}selected{% endif %}>student</option>
+    <option value="supervisor" {% if user.role=='supervisor' %}selected{% endif %}>supervisor</option>
+  </select>
+
+  <button type="submit" style="background:#7F5539;color:white;padding:10px 20px;border:none;border-radius:6px;width:100%;cursor:pointer;">Save Changes</button>
+</form>
+<a href="{{ url_for('admin_dashboard') }}" style="display:block; text-align:center; margin-top:15px; color:#7F5539;">Back to Admin</a>
+</div>
+</body>
+</html>

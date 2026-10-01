@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HourTrack Report</title>
+<style>
+body{font-family:'Segoe UI',Arial; background:#FDF6EE; margin:0; color:#5C4033}
+.header{background:#7F5539; color:white; padding:18px 30px; display:flex; justify-content:space-between; align-items:center}
+.header a{color:#FFDDB3; text-decoration:none; background:rgba(255,255,255,0.15); padding:8px 16px; border-radius:20px; font-weight:bold}
+.card{background:#FFFFFF; padding:25px; border-radius:12px; margin:20px 30px; box-shadow:0 4px 12px rgba(127,85,57,0.08); border:1px solid #f3e5d0}
+h2{color:#7F5539; margin:0 0 10px 0}
+.stats{display:flex; gap:15px; margin:15px 0}
+.stat-box{background:#FDF0E1; padding:15px 20px; border-radius:10px; border-left:4px solid #7F5539}
+.stat-box span{font-size:22px; font-weight:bold; color:#7F5539}
+table{width:100%; border-collapse:collapse; margin-top:15px}
+th{background:#7F5539; color:white; padding:12px; text-align:left}
+td{padding:10px; border-bottom:1px solid #f5e6d3; font-size:14px}
+tr:hover{background:#FDF0E1}
+.badge{padding:4px 10px; border-radius:12px; font-size:12px; font-weight:bold; color:white}
+.badge-approved{background:brown} .badge-pending{background:#E9C46A; color:#7F5539} .badge-rejected{background:#E76F51}
+.btn{background:brown; color:white; padding:10px 18px; text-decoration:none; border-radius:8px; font-weight:bold}
+.btn:hover{background:brown}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>HourTrack  Student Report</h1>
+  <div>
+    <a href="/download_report_csv" style="background:#7F5539; margin-right:10px">Download CSV</a>
+    <a href="/download_report_pdf" style="background:#7F5539; margin-left:10px">Download PDF</a>
+</div>
+    <a href="{{ url_for('admin_dashboard') }}" style="background:#7F5539;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;margin-right:10px">Back</a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Monthly Summary</h2>
+  <p style="opacity:0.7">Generated: {{ now.strftime('%Y-%m-%d %H:%M') }}</p>
+  <div class="stats">
+    <div class="stat-box">Total Logs: <span>{{ logs|length }}</span></div>
+    <div class="stat-box">Total Hours: <span>{{ "%.2f"|format(total_hours) }}</span></div>
+  </div>
+
+  <table>
+    <tr><th>Student</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th></tr>
+    {% for log in logs %}
+    <tr>
+      <td><strong>{{ log.student.name if log.student else 'Unknown' }}</strong><br><small>{{ log.student.email if log.student else '' }}</small></td>
+      <td>{{ log.clock_in_time.strftime('%Y-%m-%d %H:%M') if log.clock_in_time else '' }}</td>
+      <td>{{ log.clock_out_time.strftime('%Y-%m-%d %H:%M') if log.clock_out_time else '—' }}</td>
+      <td><strong style="color:brown">{{ log.total_hours }} hrs</strong></td>
+      <td><span class="badge badge-{{ log.status }}">{{ log.status }}</span></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+</body>
+</html>

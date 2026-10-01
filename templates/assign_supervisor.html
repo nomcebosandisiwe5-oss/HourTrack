@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Assign Supervisor to Student</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label>Student:</label><br>
+        <select name="student_id" required>
+            {% for student in students %}
+                <option value="{{ student.id }}">
+                    {{ student.name }} ({{ student.program }})
+                </option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Supervisor:</label><br>
+        <select name="supervisor_id" required>
+            {% for supervisor in supervisors %}
+                <option value="{{ supervisor.id }}">
+                    {{ supervisor.name }} ({{ supervisor.department }})
+                </option>
+            {% endfor %}
+        </select><br><br>
+
+        <button type="submit">Assign</button>
+    </form>
+
+    <br>
+    <h2>Current Assignments</h2>
+    <table border="1">
+        <tr><th>Student</th><th>Program</th><th>Assigned Supervisor</th></tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.program }}</td>
+            <td>{{ student.supervisor.name if student.supervisor else 'Unassigned' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

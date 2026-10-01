@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard - HourTrack</title>
+<style>
+body{font-family:'Segoe UI', Arial; background:#FDF6EE; margin:0; padding:0; color:#5C4033}
+.header{background:#7F5539; color:white; padding:18px 30px; display:flex; justify-content:space-between; align-items:center;}
+.header h1{margin:0; color:white; font-size:24px}
+.header a{color:#FFDDB3; text-decoration:none; font-weight:bold; background:rgba(255,255,255,0.15); padding:8px 16px; border-radius:20px}
+.container{padding:25px 30px; max-width:1200px; margin:0 auto}
+.card{background:#FFFFFF; padding:25px; border-radius:12px; margin-top:20px; box-shadow:0 4px 12px rgba(127,85,57,0.08); border:1px solid #f3e5d0}
+h1,h2{color:#7F5539}
+.btn-action{background:#7F5539; color:white; padding:10px 18px; text-decoration:none; border-radius:8px; font-weight:600; border:none; cursor:pointer; font-size:13px}
+table{width:100%; border-collapse:collapse; margin-top:15px}
+th{background:#7F5539; color:white; padding:13px 12px; text-align:left}
+td{padding:12px; border-bottom:1px solid #f5e6d3; font-size:14px}
+tr:hover{background:#FDF0E1}
+.role-badge{padding:4px 8px; border-radius:12px; font-size:11px; font-weight:bold; text-transform:uppercase; color:white; background:#7F5539}
+
+/* PROFILE MODAL */
+.modal{display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5)}
+.modal-content{background:#fff; margin:8% auto; padding:25px; border-radius:12px; width:90%; max-width:450px; position:relative}
+.close{position:absolute; right:15px; top:10px; font-size:24px; cursor:pointer; color:#7F5539}
+.profile-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f5e6d3}
+.profile-row strong{color:#7F5539}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>HourTrack Admin</h1>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <a href="/my_profile" style="background:#7F5539;color:white;padding:8px 16px;border-radius:8px;text-decoration:none">My Profile</a>
+    <a href="{{ url_for('logout') }}" style="background:#7F5539;color:white;padding:8px 16px;border-radius:8px;text-decoration:none">Logout</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2 style="margin-top:0;">All Users ({{ users|length }})</h2>
+    <h3>Admin Actions</h3>
+    <div style="display:flex; gap:10px; margin-bottom:15px;">
+      <a href="/admin/upload" style="background:#7F5539;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;">📤 Upload Data (CSV)</a>
+      <a class="btn-action" href="{{ url_for('generate_report') }}">Generate Report</a>
+    </div>
+
+   <table>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Profile</th>
+    <th>Assigned To</th>
+    <th>Action</th>
+  </tr>
+  {% for user in users %}
+  <tr>
+    <td><strong>{{ user.first_name }} {{ user.last_name }}</strong></td>
+    <td>{{ user.email }}<br><small style="color:#9C6644">{{ user.email.split('@')[0] }}</small></td>
+    <td><span class="role-badge">{{ user.role or 'student' }}</span></td>
+    <td>
+      <button onclick="openModal('modal{{ user.id }}')" style="background:#E6CCB2;color:#7F5539;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:bold">👁️ View</button>
+    </td>
+    <td>
+      {% if not user.role or user.role|lower == 'student' %}
+        <span style="font-weight:600">{{ user.supervisor.first_name ~ ' ' ~ user.supervisor.last_name if user.supervisor else 'Not assigned' }}</span>
+        {% if not user.supervisor %}<br><small style="color:red"></small>{% endif %}
+      {% else %}-{% endif %}
+    </td>
+   <td>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+    {% if not user.is_approved %}
+    <a href="/approve_user/{{ user.id }}"><button style="background:#7F5539;color:white;border:none;padding:4px 8px;border-radius:4px">Approve</button></a>
+    {% endif %}
+
+    {% if not user.role or user.role|lower == 'student' %}
+    <form method="POST" action="{{ url_for('assign_supervisor') }}" style="display:flex;gap:4px">
+      <input type="hidden" name="student_id" value="{{ user.id }}">
+      <select name="supervisor_id" required style="padding:4px;border-radius:4px;border:1px solid #ccc">
+        {% for sup in supervisors %}
+        <option value="{{ sup.id }}">{{ sup.first_name }} {{ sup.last_name }} ({{ sup.students|length if sup.students else 0 }})</option>
+        {% endfor %}
+      </select>
+      <button type="submit" style="background:#7F5539;color:white;border:none;padding:4px 8px;border-radius:4px">Assign</button>
+    </form>
+    {% endif %}
+
+    <a href="/delete_user/{{ user.id }}" style="background:#A44A3F;color:white;padding:4px 8px;text-decoration:none;border-radius:4px">Delete</a>
+    <a href="/edit_user/{{ user.id }}" style="background:#7F5539;color:white;padding:4px 8px;text-decoration:none;border-radius:4px">Edit</a>
+  </div>
+    </td>
+</tr>
+
+<!-- PROFILE MODAL -->
+<div id="modal{{ user.id }}" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('modal{{ user.id }}')">&times;</span>
+    <h3 style="margin-top:0;">{{ user.first_name }} {{ user.last_name }} - Full Registration Details</h3>
+    <div class="profile-row"><strong>First Name:</strong> <span>{{ user.first_name }}</span></div>
+    <div class="profile-row"><strong>Last Name:</strong> <span>{{ user.last_name }}</span></div>
+    <div class="profile-row"><strong>Email / Student No:</strong> <span>{{ user.email }}<br><small>{{ user.email.split('@')[0] }} is student number</small></span></div>
+    <div class="profile-row"><strong>Role Selected:</strong> <span style="text-transform:uppercase; font-weight:bold">{{ user.role }}</span></div>
+    <div class="profile-row"><strong>Location Chosen:</strong> <span>{{ user.location if user.location else 'Not selected' }}</span></div>
+    <div class="profile-row"><strong>Course Chosen:</strong> <span>{{ user.course if user.course else 'Not selected / Supervisor' }}</span></div>
+    <div class="profile-row"><strong>Supervisor:</strong> <span>{{ user.supervisor.first_name ~ ' ' ~ user.supervisor.last_name if user.supervisor else 'Not assigned' }}</span></div>
+    <div class="profile-row"><strong>Status:</strong> <span>{{ 'Approved' if user.is_approved else 'Pending' }}</span></div>
+{% if user.is_approved %}
+<span style="color:green;">Approved</span>
+{% else %}
+<span style="color:red;">Pending Approval</span>
+{% endif %}
+
+    <div style="margin-top:15px; padding:10px; background:#FDF6EE; border-radius:8px;">
+      <small><strong>What student did at registration:</strong> Student entered name, email, selected location = <b>{{ user.location }}</b> and course = <b>{{ user.course }}</b> and role = <b>{{ user.role }}</b></small>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+</table>
+  </div>
+</div>
+
+<script>
+function openModal(id){ document.getElementById(id).style.display='block'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+window.onclick = function(e){ if(e.target.classList.contains('modal')){ e.target.style.display='none'; } }
+</script>
+
+</body>
+</html>

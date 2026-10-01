@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Supervisor Dashboard</title>
+<style>
+body{font-family:'Segoe UI', Arial; background:#FDF6EE; margin:0; padding:0; color:#5C4033}
+.header{background:#7F5539; color:white; padding:18px 30px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.header h1{margin:0; color:white; font-size:24px}
+.header a{color:#FFDDB3; text-decoration:none; font-weight:bold; background:rgba(255,255,255,0.15); padding:8px 16px; border-radius:20px}
+.header a:hover{background:rgba(255,255,255,0.25)}
+.container{padding:25px 30px; max-width:1100px; margin:0 auto}
+.welcome{font-size:16px; opacity:0.8}
+.card{background:#FFFFFF; padding:25px; border-radius:12px; margin-top:20px; box-shadow:0 4px 12px rgba(127,85,57,0.08); border:1px solid #f3e5d0}
+h2{color:#7F5539; margin-top:0}
+table{width:100%; border-collapse:collapse; margin-top:15px}
+th{background:#7F5539; color:white; padding:13px 12px; text-align:left; font-weight:600}
+th:first-child{border-radius:8px 0 0 0} th:last-child{border-radius:0 8px 0 0}
+td{padding:12px; border-bottom:1px solid #f5e6d3}
+tr:last-child td{border-bottom:none}
+tr:hover{background:#FDF0E1}
+.hours-badge{background:#7F5539; color:white; padding:4px 10px; border-radius:12px; font-weight:bold; font-size:13px}
+.btn-approve{background:#7F5539; color:white; padding:6px 14px; text-decoration:none; border-radius:6px; font-weight:600; margin-right:6px}
+.btn-approve:hover{background:#7F5539}
+.btn-reject{background:#E76F51; color:white; padding:6px 14px; text-decoration:none; border-radius:6px; font-weight:600}
+.btn-reject:hover{background:#d45a3a}
+.flash-success{background:#e6f4f1; border-left:4px solid #7F5539; color:#1d6b62; padding:10px 14px; border-radius:6px; margin-bottom:15px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Supervisor Dashboard</h1>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <span class="welcome">Welcome , {{ name }} &nbsp;</span>
+    <a href="/my_profile" style="background:#7F5539;color:white;padding:8px 16px;border-radius:8px;text-decoration:none">My Profile</a>
+    <a href="{{ url_for('logout') }}" style="background:#e74c3c;color:white;padding:8px 16px;border-radius:8px;text-decoration:none">Logout</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- This FIXES your bullet bug - only shows success, hides Invalid login error -->
+  
+  <div class="card">
+    <h2>Timesheet For Pending Approvals</h2>
+    <table border="1" cellpadding="8" style="width:100%; border-collapse:collapse;">
+        <tr>
+            <th>Student</th><th>Task</th><th>Location</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Action</th><th>Status</th><th>Reason</th>
+        </tr>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.student.name }}<br><small>{{ log.student.email }}</small></td>
+            <td>{{ log.task_description }}</td>
+            <td>{{ log.location }}</td>
+            <td>{{ log.clock_in_time }}</td>
+            <td>{{ log.clock_out_time }}</td>
+            <td>{{ log.total_hours }} hrs</td>
+            <td style="min-width:220px;">
+                {% if log.status == 'pending' %}
+                <a href="/approve_log/{{ log.id }}" style="background:#7F5539; color:white; padding:5px 10px; border-radius:6px; text-decoration:none;">Approve</a>
+                <form action="/reject/{{ log.id }}" method="POST" style="margin-top:8px;">
+                    <input type="text" name="comment" placeholder="Reason for rejection" required style="padding:5px; width:95%; border-radius:5px; border:1px solid #B07D4F;">
+                    <button type="submit" style="background:#B07D4F; color:white; padding:5px 10px; border-radius:6px; border:none; margin-top:5px; width:100%; cursor:pointer;">Reject with Reason</button>
+                </form>
+                {% else %}
+                <em>Done</em>
+                {% endif %}
+            </td>
+            <td>{{ log.status }}</td>
+            <td style="color:#7F5539;">{{ log.rejection_comment or '' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% if not logs %}
+    <p>No pending logs yet — student must Clock In + Clock Out first.</p>
+    {% endif %}
+</div>

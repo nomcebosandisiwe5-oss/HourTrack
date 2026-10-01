@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+body{font-family:Arial; background:#FDF6EE; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0}
+.card{background:white; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:350px; text-align:center; border:1px solid #f3e5d0}
+h1{color:#5C4033; margin-top:0}
+.time{font-size:28px; font-weight:bold; color:#7F5539; margin:20px 0; background:#FFFBF7; padding:15px; border-radius:8px; border:1px solid #e9dcc5}
+p{color:#9C6644; font-size:14px}
+button{background:#7F5539; color:white; padding:12px; width:100%; border:none; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; margin-top:10px}
+button:hover{background:#9C6644}
+a.back{color:#7F5539; text-decoration:none; font-size:14px; display:inline-block; margin-top:15px; font-weight:600}
+</style>
+
+<div class="card">
+  <h1>⏰ Clock In</h1>
+  <p>You are about to start your work session</p>
+  
+  <div class="time" id="liveTime">--:--:--</div>
+
+  <form method="POST" action="{{ url_for('clock_in') }}">
+    <button type="submit">Confirm Clock In</button>
+  </form>
+
+  <a href="/student_dashboard" class="back">← Back to Dashboard</a>
+</div>
+
+<script>
+// Live clock
+function updateTime(){
+  const now = new Date();
+  document.getElementById('liveTime').innerHTML = now.toLocaleTimeString();
+}
+setInterval(updateTime, 1000);
+updateTime();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload CSV</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #8B5E3C; display:flex; justify-content:center; align-items:center; min-height:100vh; font-family: Arial, sans-serif; }
+    .card-box { background:white; padding:40px; border-radius:20px; width:450px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center; }
+    h2 { color:#7F5539; font-weight:bold; margin-bottom:10px; }
+    .sub-text { background:#efebe9; color:#4e342e; font-size:13px; padding:10px; border-radius:10px; margin:15px 0; }
+    .btn-brown { background:#7F5539; color:white; border-radius:20px; width:100%; padding:11px; border:none; font-weight:bold; }
+    .btn-brown:hover { background:#4e342e; color:white; }
+    .btn-light-brown { background:#d7ccc8; color:#4e342e; border-radius:20px; width:100%; padding:11px; display:block; text-decoration:none; font-weight:bold; margin-top:10px; box-sizing:border-box; }
+    .btn-light-brown:hover { background:#bcaaa4; }
+  </style>
+</head>
+<body>
+<div class="card-box">
+  <h2>Upload Users CSV</h2>
+  <p class="sub-text">Columns needed: first_name,last_name,email,role,location,course</p>
+  
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".csv" class="form-control mb-3" required>
+    <button type="submit" class="btn-brown">Upload</button>
+<a href="javascript:history.back()" class="btn-brown" style="display:block; text-decoration:none; margin-top:10px; text-align:center; padding:11px; border-radius:20px; background:#7F5539; color:white; font-weight:bold;">Back</a>
+  </form>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+</body>
+</html>
