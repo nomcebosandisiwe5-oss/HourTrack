@@ -286,6 +286,7 @@ def generate_report():
 
     return render_template('generate_report.html', logs=logs, total_hours=total_hours, now=datetime.now())
 
+@app.route('/download_report_csv')
 def download_report_csv():
     if 'user_id' not in session or session.get('role') != 'admin':
         return redirect(url_for('login'))
@@ -300,7 +301,7 @@ def download_report_csv():
         writer.writerow([
             log.student.name if log.student else 'Unknown',
             log.student.email if log.student else '',
-            getattr(log, 'activity', '') or getattr(log, 'task', '') or '',
+            getattr(log, 'task_description', '') or '',
             getattr(log, 'location', '') or '',
             log.clock_in_time,
             log.clock_out_time,
@@ -346,7 +347,7 @@ def download_report_pdf():
     pdf.set_font("Arial", size=8)
     for log in logs:
         name = log.student.name if log.student else 'Unknown'
-        activity = getattr(log, 'activity', '') or getattr(log, 'task', '') or ''
+        activity = getattr(log, 'task_description', '') or ''
         location = getattr(log, 'location', '') or ''
         row = [
             str(name)[:25],
