@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     is_approved = db.Column(db.Boolean, default=False)
     reset_token = db.Column(db.String(100), nullable=True)
     reset_token_expiry = db.Column(db.DateTime, nullable=True)
+    year = db.Column(db.String(20))
 
     students = db.relationship('User', backref=db.backref('supervisor', remote_side=[id]), lazy=True, foreign_keys=[supervisor_id])
 
