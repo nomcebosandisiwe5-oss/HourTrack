@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db
 from extensions import mail
 from flask_login import LoginManager
 from models import User
 from flask_bcrypt import Bcrypt
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+
 
 
 
@@ -38,8 +38,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 from routes import *
-
-app = Flask(__name__)
 
 
 with app.app_context():
