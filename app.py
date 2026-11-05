@@ -35,7 +35,31 @@ def load_user(user_id):
 from routes import *
 
 with app.app_context():
-        db.create_all()
+    db.create_all()
+    # AUTO-CREATE ADMIN - DO NOT DELETE YET
+    try:
+        admin_email = "nomcebosandisiwe5@gmail.com"
+        existing = User.query.filter_by(email=admin_email).first()
+        if not existing:
+            admin_user = User(
+                first_name="Nomcebo",
+                last_name="Admin",
+                email=admin_email,
+                password_hash=bcrypt.generate_password_hash("Admin45").decode("utf-8"),
+                role="admin",
+                location="Durban",
+                course="Admin"
+            )
+            db.session.add(admin_user)
+            db.session.commit()
+            print("ADMIN CREATED")
+        else:
+            existing.role = "admin"
+            existing.password_hash = bcrypt.generate_password_hash("Admin45").decode("utf-8")
+            db.session.commit()
+            print("ADMIN UPDATED")
+    except Exception as e:
+        print("ADMIN SETUP ERROR:", e)       
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
