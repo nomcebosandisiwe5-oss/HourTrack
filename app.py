@@ -36,8 +36,23 @@ def load_user(user_id):
 
 from routes import *
 
+app = Flask(__name__)
+db = SQLAlchemy(app)
+
 with app.app_context():
     db.create_all()
+
+# AUTO FIX: Add year column if missing (no shell needed)
+from sqlalchemy import text
+try:
+    with app.app_context():
+        db.session.execute(text('ALTER TABLE "user" ADD COLUMN IF NOT EXISTS year VARCHAR(20);'))
+        db.session.commit()
+        print("YEAR COLUMN CHECK DONE")
+except Exception as e:
+    print("YEAR COLUMN FIX:", e)
+
+    
     # AUTO-CREATE ADMIN - DO NOT DELETE YET
     try:
         admin_email = "nomcebosandisiwe5@gmail.com"
