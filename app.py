@@ -5,6 +5,9 @@ from flask_login import LoginManager
 from models import User
 from flask_bcrypt import Bcrypt
 import os
+from flask import Flask, render_template, request, redirect, url_for, flash
+
+
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -37,7 +40,7 @@ def load_user(user_id):
 from routes import *
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
+
 
 with app.app_context():
     db.create_all()
