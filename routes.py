@@ -286,22 +286,22 @@ def generate_report():
 
     return render_template('generate_report.html', logs=logs, total_hours=total_hours, now=datetime.now())
 
-@app.route('/download_report_csv')
 def download_report_csv():
     if 'user_id' not in session or session.get('role') != 'admin':
         return redirect(url_for('login'))
 
     logs = HoursLog.query.all()
     
-    
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(['Student Name', 'Email', 'Clock In', 'Clock Out', 'Total Hours', 'Status'])
+    writer.writerow(['Student Name', 'Email', 'Activity', 'Location', 'Clock In', 'Clock Out', 'Total Hours', 'Status'])
     
     for log in logs:
         writer.writerow([
             log.student.name if log.student else 'Unknown',
             log.student.email if log.student else '',
+            getattr(log, 'activity', '') or getattr(log, 'task', '') or '',
+            getattr(log, 'location', '') or '',
             log.clock_in_time,
             log.clock_out_time,
             log.total_hours,
@@ -323,16 +323,43 @@ def download_report_pdf():
 
     logs = HoursLog.query.all()
     
-    pdf = FPDF()
+    # Landscape so Activity + Location fit
+    pdf = FPDF(orientation='L', unit='mm', format='A4')
     pdf.add_page()
     pdf.set_font("Arial", 'B', 16)
-    pdf.cell(200, 10, txt="HourTrack - Admin Report", ln=True, align='C')
-    pdf.ln(10)
-    
-    pdf.set_font("Arial", size=10)
+    pdf.cell(277, 10, txt="HourTrack - Admin Report", ln=True, align='C')
+    pdf.ln(5)
+    pdf.set_font("Arial", size=9)
+    pdf.cell(277, 8, txt=f"Total Logs: {len(logs)}", ln=True)
+    pdf.ln(5)
+
+    # Table header
+    pdf.set_font("Arial", 'B', 9)
+    pdf.set_fill_color(220, 220, 220)
+    headers = ['Student', 'Activity', 'Location', 'Clock In', 'Clock Out', 'Hours', 'Status']
+    widths = [45, 55, 45, 45, 45, 20, 22]
+    for i, h in enumerate(headers):
+        pdf.cell(widths[i], 8, h, border=1, fill=True)
+    pdf.ln()
+
+    # Table rows
+    pdf.set_font("Arial", size=8)
     for log in logs:
         name = log.student.name if log.student else 'Unknown'
-        pdf.cell(0, 8, txt=f"{name} | In: {log.clock_in_time} | Out: {log.clock_out_time} | {log.total_hours}h | {log.status}", ln=True, border=1)
+        activity = getattr(log, 'activity', '') or getattr(log, 'task', '') or ''
+        location = getattr(log, 'location', '') or ''
+        row = [
+            str(name)[:25],
+            str(activity)[:30],
+            str(location)[:25],
+            str(log.clock_in_time),
+            str(log.clock_out_time),
+            str(log.total_hours),
+            str(log.status)
+        ]
+        for i, val in enumerate(row):
+            pdf.cell(widths[i], 8, val, border=1)
+        pdf.ln()
     
     response = make_response(bytes(pdf.output()))
     response.headers['Content-Disposition'] = 'attachment; filename=HourTrack_Report.pdf'
