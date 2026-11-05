@@ -41,10 +41,11 @@ tr:hover{background:#FDF0E1}
   </div>
 
   <table>
-    <th>Student</th><th>Activity</th><th>Location</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th>
+    <th>Student</th><th>Course</th<th>Activity</th><th>Location</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th>
     {% for log in logs %}
     <tr>
       <td><strong>{{ log.student.name if log.student else 'Unknown' }}</strong><br><small>{{ log.student.email if log.student else '' }}</small></td>
+      <td>{{ log.student.course if log.student else '' }}</td>
       <td>{{ log.task_description }}</td>
       <td>{{ log.location }}</td>
       <td>{{ log.clock_in_time.strftime('%Y-%m-%d %H:%M') if log.clock_in_time else '' }}</td>
