@@ -3,9 +3,11 @@ from models import db
 from extensions import mail
 from flask_login import LoginManager
 from models import User
+from flask_bcrypt import Bcrypt
 import os
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'hourtrack_unizulu_2026')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
