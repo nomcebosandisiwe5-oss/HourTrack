@@ -35,6 +35,7 @@ def register():
         course=request.form['course']
         location = request.form.get('location')
         role = request.form.get('role', 'student').lower()
+        year = request.form.get('year')
 
         # STUDENT MUST USE UNIVERSITY EMAIL
         if role == 'student':
@@ -64,6 +65,7 @@ def register():
                 email=email, 
                 password=hashed_password, 
                 role=role,
+                year=year,
                 course=course,
                 location=location,
                 is_approved=False
