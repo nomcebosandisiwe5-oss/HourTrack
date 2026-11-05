@@ -259,7 +259,18 @@ def admin_dashboard():
         User.is_approved == True
     ).all()
 
-    return render_template('admin_dashboard.html', users=users, supervisors=supervisors)
+    from sqlalchemy import or_
+    nursing_students = User.query.filter(User.role.ilike('student'), or_(User.course.ilike('%nurs%'), User.course.ilike('%nursing%'))).all()
+    education_students = User.query.filter(User.role.ilike('student'), or_(User.course.ilike('%educ%'), User.course.ilike('%b-ed%'), User.course.ilike('%b ed%'), User.course.ilike('%bed%'))).all()
+    nursing_supervisors = User.query.filter(User.role.ilike('supervisor'), or_(User.course.ilike('%nurs%'), User.course.ilike('%nursing%'))).all()
+    education_supervisors = User.query.filter(User.role.ilike('supervisor'), or_(User.course.ilike('%educ%'), User.course.ilike('%b-ed%'))).all()
+    admin_users = User.query.filter(User.role.ilike('admin')).all()
+    try:
+        from models import Activity
+        activities = Activity.query.all()
+    except:
+        activities = []
+    return render_template('admin_dashboard.html', users=users, supervisors=supervisors, nursing_students=nursing_students, education_students=education_students, nursing_supervisors=nursing_supervisors, education_supervisors=education_supervisors, admin_users=admin_users, activities=activities)
 
 
 
