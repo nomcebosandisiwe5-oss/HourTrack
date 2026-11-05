@@ -41,7 +41,7 @@ tr:hover{background:#FDF0E1}
   </div>
 
   <table>
-    <th>Student</th><th>Course</th<th>Activity</th><th>Location</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th>
+    <th>Student</th><th>Course</th><th>Activity</th><th>Location</th><th>Clock In</th><th>Clock Out</th><th>Hours</th><th>Status</th>
     {% for log in logs %}
     <tr>
       <td><strong>{{ log.student.name if log.student else 'Unknown' }}</strong><br><small>{{ log.student.email if log.student else '' }}</small></td>
