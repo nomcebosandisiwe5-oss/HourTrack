@@ -509,7 +509,7 @@ def forgot_password():
             # but your reset template uses message - so we handle both
             flash('No account found with that email', 'danger')
             return redirect('/forgot-password')
-
+    try:
         token = secrets.token_urlsafe(32)
         user.reset_token = token
         user.reset_token_expiry = datetime.utcnow() + timedelta(minutes=30)
@@ -519,8 +519,12 @@ def forgot_password():
 
         msg = Message("HourTrack - Reset Password", recipients=[email])
         msg.body = f"Hello,\n\nYou requested to reset your password.\nClick the link below:\n{reset_link}\n\nThis link expires in 30 minutes.\nIf you didn't request this, ignore this email."
-        mail.send(msg)
-        
+
+              mail.send(msg)
+        except Exception as e:
+            print(f"FORGOT PASSWORD ERROR: {e}")
+            flash(f'Error: {e}', 'danger')
+            return redirect('/forgot-password')
 
         flash('Reset link sent! Check  email', 'success')
         return redirect('/login')
