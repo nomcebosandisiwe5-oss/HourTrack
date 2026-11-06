@@ -520,11 +520,8 @@ def forgot_password():
         msg = Message("HourTrack - Reset Password", recipients=[email])
         msg.body = f"Hello,\n\nYou requested to reset your password.\nClick the link below:\n{reset_link}\n\nThis link expires in 30 minutes.\nIf you didn't request this, ignore this email."
 
-        mail.send(msg)
-        except Exception as e:
-            print(f"FORGOT PASSWORD ERROR: {e}")
-            flash(f'Error: {e}', 'danger')
-            return redirect('/forgot-password')
+       mail.send(msg)
+        
 
         flash('Reset link sent! Check  email', 'success')
         return redirect('/login')
