@@ -68,14 +68,14 @@ td{padding:8px; border-bottom:1px solid #ddd; font-size:13px}
         <a href="/generate_report" class="btn" style="background:#7F5539">Download PDF Report</a>
         <a href="/generate_report?type=csv" class="btn" style="background:#7F5539">Download CSV Report</a>
       </div>
-      <table><tr><th>Name</th><th>Email</th><th>Role</th><th>Course</th><th>Action</th></tr>
+      <table><tr><th>Name</th><th>Email</th><th>Role</th><th>Course/Department</th><th>Action</th></tr>
       {% for u in users %}<tr><td>{{ u.first_name }}</td><td>{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.course }}</td><td>{% if u.is_approved %}<span style="color:#7F5539; font-weight:bold">Approved</span>{% else %}<a href="/approve_user/{{ u.id }}" class="btn" style="background:#7F5539">Approve</a>{% endif %} <a href="/delete_user/{{ u.id }}" class="btn" style="background:#7F5539">Delete</a></td></tr>{% endfor %}
       </table>
     </div>
 
     <div id="nursing-s" class="tab" style="display:none">
       <h3>2. Nursing Students</h3>
-      <table><tr><th>Name</th><th>Email</th><th>Course</th><th>Email</th>Location<th>Assign Supervisor</th></tr>
+      <table><tr><th>Name</th><th>Email</th><th>Course/Department</th><th>Email</th>Location<th>Assign Supervisor</th></tr>
       {% for u in nursing_students %}
       <tr><td>{{ u.first_name }} {{ u.last_name }}</td><td>{{ u.email }}</td><td>{{ u.course }}</td><td>{{ u.location }}</td><td><form action="/admin/assign" method="POST" style="display:flex; gap:4px"><input type="hidden" name="student_id" value="{{ u.id }}"><select name="supervisor_id">{% for sup in nursing_supervisors %}<option value="{{ sup.id }}">{{ sup.first_name }}</option>{% endfor %}</select><button class="btn">Assign</button></form></td></tr>
       {% else %}<tr><td colspan="5">None</td></tr>{% endfor %}
@@ -84,7 +84,7 @@ td{padding:8px; border-bottom:1px solid #ddd; font-size:13px}
 
     <div id="edu-s" class="tab" style="display:none">
       <h3>3. Education Students</h3>
-      <table><tr><th>Name</th><th>Email</th><th>Course</th><th>Location</th><th>Assign Supervisor</th></tr>
+      <table><tr><th>Name</th><th>Email</th><th>Course/Department</th><th>Location</th><th>Assign Supervisor</th></tr>
       {% for u in education_students %}
       <tr><td>{{ u.first_name }} {{ u.last_name }}</td><td>{{ u.email }}</td><td>{{ u.course }}</td>
       <td>{{ u.location or 'Not set' }}</td>
